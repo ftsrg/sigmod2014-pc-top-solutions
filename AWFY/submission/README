@@ -1,0 +1,33 @@
+(1) Team Name:
+AWFY (Are We Fast Yet)
+
+(2) Members
+ - Moritz Kaufmann, moritz.kaufmann@tum.de, Technische Universität München (TUM), Institute of Computer Science, Germany, PhD Student
+ - Manuel Then, then@in.tum.de, Technische Universität München (TUM), Institute of Computer Science, Germany, PhD Student
+ - Tobias Mühlbauer, muehlbau@in.tum.de, Technische Universität München (TUM), Institute of Computer Science, Germany, PhD Student
+ - Andrey Gubichev, gubichev@in.tum.de, Technische Universität München (TUM), Institute of Computer Science, Germany, PhD Student
+ 
+(3) Supervisor Name:
+ - Prof. Alfons Kemper, Ph.D.
+ - Prof. Dr. Thomas Neumann
+
+(4) Summary of Techniques
+ - Query Type 1: We use a bidirectional breadth-first search expansion on the entire graph; during the BFS we skip all the person nodes that do not satisfy the criteria (number of replies to each other).
+ - Query Type 2: During indexing time we analyze the entire graph and find out how many people have a particular interest; in addition, we keep the max birthday of a person with this interest. Using this index we iterate over all interests (starting with the one that has the biggest number of people). We apply pruning based on birthday during iteration.
+ - Query Type 3: We build a tree interval encoding for the places and their parts; this is used to have a fast lookup for place to persons. For all persons in the given place we run a breadth first search up to the set hop number and do a count for all person pairs common interest to find the top-k.
+ - Query Type 4: We run a BFS from every node in order to find the sum of geodesic distances from that node. Nodes are ordered by the number of friends of friends (that characteristic is computed using a dynamic programming-style technique). We use pruning in order to stop BFS, if the corresponding start node can not be part of top-k. The bound for pruning keeps improving as the process goes on, thus, allowing us to avoid starting BFS for a significant number of nodes.
+
+ - General:
+ (1) Parallel Processing (task- and data-parallelization)
+ (2) Data loading: We use an adapted version of one of the author's approaches (see [1]) for task- and data-parallel CSV data parsing and casting. We further use techniques described in [1] for efficient loading of indexes.
+ (3) Index structures: hash for tags, adjacency list for social graph. Highly tuned index implementations.
+ (4) Non-blocking event-driven scheduler that takes into account dependencies between parsing, indexing, and query execution, as well as between different types of indexes and queries. It prioritizes the tasks on which many others tasks depend. 
+ (5) Third Party Code:
+ - boost library: boost::unordered_set, boost::unordered_map
+ - MurmurHash2 and MurmurHash3 by Austin Appleby: https://code.google.com/p/smhasher/ 
+ - SIMD ordered set intersection by Daniel Lemire, Leonid Boytsov, Nathan Kurz: http://arxiv.org/abs/1401.6399
+ - our hash table implementation is based on a hash table by Henrik Mühe and Florian Funke (both TUM) with kind permission by the authors
+
+References:
+[1] Tobias Mühlbauer et al., "Instant Loading for Main Memory Databases", PVLDB 2013 (presented at VLDB 2014).
+
