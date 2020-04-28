@@ -1,5 +1,5 @@
 # Compiler flags
-CC=g++-4.4
+CC=g++-9
 #Profiling CFLAGS
 MATH_FLAGS=-ffast-math -funsafe-math-optimizations -fassociative-math -ffinite-math-only -fno-signed-zeros
 CFLAGS=-march=core2 -msse4.1 -std=c++0x -c -O3 -W -Wall -Wextra -DDEBUG -DEXPBACKOFF -g -pedantic $(MATH_FLAGS) -funroll-all-loops -fvariable-expansion-in-unroller -fno-omit-frame-pointer -Iinclude
@@ -20,9 +20,6 @@ EXEC_EXECUTABLE=runGraphQueries
 EXEC_TESTER_EXECUTABLE=runTester
 
 RELEASE_OBJECTS=$(addsuffix .release.o, $(basename $(CORE_SOURCES)))
-RELEASE_BIN=submission/runGraphQueries
-RELEASE_FILE=release.tar.gz
-RELEASE_SOURCE=submission/src
 
 # Test env variables
 ifndef FACTOR
@@ -50,8 +47,6 @@ TEST_DATA_FILES=$(10K_DATASET_PATH) $(1K_DATASET_PATH) $(10K_DATASET_PATH) $(TES
 all: executables
 	@rm -f $(CORE_DEPS)
 
-release: $(RELEASE_FILE)
-
 test_all: test_1k test_10k
 
 test_100k: test_env $(100K_DATASET_PATH)  $(EXEC_TESTER_EXECUTABLE)
@@ -64,29 +59,10 @@ test_1k: test_env $(EXEC_TESTER_EXECUTABLE)
 	./runTester -factor $(FACTOR) -exclude $(EXCLUDE) $(TEST_DATA_PATH)/data1k/ $(TEST_DATA_PATH)/1k-queries.txt $(TEST_DATA_PATH)/1k-answers.txt
 	./runTester -factor $(FACTOR) -exclude $(EXCLUDE) $(TEST_DATA_PATH)/data1k/ $(ADDITIONAL_TEST_DATA_PATH)/additional-1k-queries.txt $(ADDITIONAL_TEST_DATA_PATH)/additional-1k-answers.txt
 
-$(RELEASE_BIN): executables
-	cp $(EXEC_EXECUTABLE) $(RELEASE_BIN)
-	strip -s $(RELEASE_BIN)
-
-$(RELEASE_SOURCE): $(ALL_SOURCES) $(CORE_DEPS)
-	find include -type d -exec mkdir -p submission/src/{} \;
-	find util -type d -exec mkdir -p submission/src/{} \;
-	cp Makefile submission/src/Makefile
-	sed -i 's/g++-4.4/g++/g' submission/src/Makefile
-	sed -i 's/RELEASE_LDFLAGS/EXEC_LDFLAGS/g' submission/src/Makefile
-	find -maxdepth 1 -type f -regextype posix-extended -iregex '.*(c(pp)?|h(pp)?)' -exec cp {} submission/src/{} \;
-	find include -type f -regextype posix-extended -iregex ".*(c(pp)?|h(pp)?)" -exec cp {} submission/src/{} \;
-	find util -type f -regextype posix-extended -iregex ".*(c(pp)?|h(pp)?)" -exec cp {} submission/src/{} \;
-
-$(RELEASE_FILE): $(RELEASE_SOURCE) $(RELEASE_BIN)
-	cd submission; tar -zcvf ../all.tar.gz *
-
 clean:
 	-rm $(EXEC_EXECUTABLE) $(EXEC_TESTER_EXECUTABLE)
 	-rm *.o util/*.o
 	-rm $(CORE_DEPS)
-	-rm $(RELEASE_BIN)
-	-rm $(RELEASE_FILE)
 
 executables: $(EXEC_EXECUTABLE) $(EXEC_TESTER_EXECUTABLE)
 	@rm $(CORE_DEPS)
