@@ -2,8 +2,8 @@
 CC=g++-9
 #Profiling CFLAGS
 MATH_FLAGS=-ffast-math -funsafe-math-optimizations -fassociative-math -ffinite-math-only -fno-signed-zeros
-CFLAGS=-march=core2 -msse4.1 -std=c++0x -c -O3 -W -Wall -Wextra -DDEBUG -DEXPBACKOFF -g -pedantic $(MATH_FLAGS) -funroll-all-loops -fvariable-expansion-in-unroller -fno-omit-frame-pointer -Iinclude
-RELEASE_CFLAGS=-march=core2 -msse4.1 -std=c++0x -c -O3 -W -Wall -Wextra -DNDEBUG -DNDBGPRINT -DEXPBACKOFF -pedantic $(MATH_FLAGS) -funroll-all-loops -fvariable-expansion-in-unroller -Iinclude
+CFLAGS=-march=core2 -msse4.1 -std=c++11 -c -O3 -W -Wall -Wextra -DDEBUG -DEXPBACKOFF -g -pedantic $(MATH_FLAGS) -funroll-all-loops -fvariable-expansion-in-unroller -fno-omit-frame-pointer -Iinclude
+RELEASE_CFLAGS=-march=core2 -msse4.1 -std=c++11 -c -O3 -W -Wall -Wextra -DNDEBUG -DNDBGPRINT -DEXPBACKOFF -pedantic $(MATH_FLAGS) -funroll-all-loops -fvariable-expansion-in-unroller -Iinclude
 
 #71, 1159
 RELEASE_LDFLAGS=-Wl,-O1 -Wl,-wrap,malloc -Wl,-wrap,mmap -Wl,-wrap,posix_memalign -Wl,--whole-archive -lpthread -Wl,--no-whole-archive -static -static-libgcc

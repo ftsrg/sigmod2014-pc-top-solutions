@@ -1106,7 +1106,7 @@ pair<vector<char>,pair<uint32_t,uint64_t>> QueryRunner::buildPersonFilter(Intere
 
 std::vector<PersonId> generateInterestingPersons(QueryState& state, ConnectedComponentStats* componentStats, uint32_t numPersonsInForums, const uint32_t numPersons) {
    std::mt19937 eng(numPersonsInForums); // This is the Mersenne Twister
-   std::uniform_int<int> dist(1,numPersonsInForums-1);
+   std::uniform_int_distribution<int> dist(1,numPersonsInForums-1);
 
    const uint32_t numPairs=numPersons*2;
    uint32_t discoveredPair=0;
