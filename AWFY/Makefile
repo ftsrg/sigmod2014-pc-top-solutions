@@ -62,6 +62,7 @@ test_1k: test_env $(EXEC_TESTER_EXECUTABLE)
 clean:
 	-rm $(EXEC_EXECUTABLE) $(EXEC_TESTER_EXECUTABLE)
 	-rm *.o util/*.o
+	-rm *.o include/*.o
 	-rm $(CORE_DEPS)
 
 executables: $(EXEC_EXECUTABLE) $(EXEC_TESTER_EXECUTABLE)
