@@ -30,7 +30,7 @@ target_compile_options(
   PRIVATE -march=core2
           -msse4.1
           -c
-          -O3
+          $<$<CONFIG:RELEASE>:-O3>
           -W
           -Wall
           -Wextra
