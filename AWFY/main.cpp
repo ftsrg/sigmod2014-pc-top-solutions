@@ -115,6 +115,8 @@ int main(int argc, char **argv) {
    initScheduleGraph<PrintResults, ParseAllBatches>(scheduler, taskGraph, fileIndexes, dataPath, batches, queryState, excludes,
       PrintResults(counters, taskGraph, batches, fileIndexes, dataPath, start));
 
+   taskGraph.eraseNotUsedEdges();
+
    executeTaskGraph(hardwareThreads, scheduler, counters, threadCounts);
 
    return 0;

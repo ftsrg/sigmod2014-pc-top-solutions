@@ -135,6 +135,8 @@ public:
    void setTaskFn(Priorities::Priority priority, TaskGraph::Node node, Task task);
    void addEdge(TaskGraph::Node source, TaskGraph::Node node);
    void updateTask(TaskGraph::Node task, size_t delta);
+
+   void eraseNotUsedEdges();
 };
 
 /// Utility class to make conversion from lambda to task easier

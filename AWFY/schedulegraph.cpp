@@ -70,6 +70,51 @@ void ScheduleGraph::updateTask(TaskGraph::Node task, size_t delta) {
    }
 }
 
+void ScheduleGraph::eraseNotUsedEdges()
+{
+   const auto collectUsedNodes = [this]() {
+      unordered_set<TaskGraph::Node> nodesToVisit{TaskGraph::Node::Finish};
+      array<bool, TaskGraph::size> visitedNodes = {};
+      array<bool, TaskGraph::size> usedNodes = {};
+
+      while(!nodesToVisit.empty()) {
+         TaskGraph::Node nodeToVisit;
+         {
+            auto nodeIt = nodesToVisit.begin();
+            nodeToVisit = *nodeIt;
+            nodesToVisit.erase(nodeIt);
+         }
+
+         if (visitedNodes[nodeToVisit]) {
+            continue;
+         }
+
+         LOG_PRINT("[ScheduleGraphNodeUsage] Used node " << TaskGraph::getName(nodeToVisit));
+         visitedNodes[nodeToVisit] = true;
+         usedNodes[nodeToVisit] = true;
+
+         for(const auto& newUsedNode : sources[nodeToVisit]) {
+            nodesToVisit.insert(newUsedNode);
+         }
+      }
+
+      return usedNodes;
+   };
+
+   const auto usedNodes = collectUsedNodes();
+   for (unsigned i = 0; i < TaskGraph::size; ++i) {
+      const auto node = static_cast<TaskGraph::Node>(i);
+      if (!usedNodes[node]) {
+         LOG_PRINT("[ScheduleGraphNodeUsage] Erasing targets of node " << TaskGraph::getName(node));
+         targets[node].clear();
+         for (const auto source : sources[node]) {
+            LOG_PRINT("[ScheduleGraphNodeUsage] Erasing node " << TaskGraph::getName(node) << " from the targets of " << TaskGraph::getName(source));
+            targets[source].erase(node);
+         }
+      }
+   }
+}
+
 void ScheduleGraph::setTaskFn(Priorities::Priority priority, TaskGraph::Node node, std::function<void()>&& fn) {
    auto funcPtr = new std::function<void()>(fn);
    Task task(nodeFunctionExec, funcPtr, node);
