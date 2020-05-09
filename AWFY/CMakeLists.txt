@@ -42,8 +42,9 @@ target_compile_options(
           -fno-signed-zeros
           -funroll-all-loops
           -fvariable-expansion-in-unroller)
-target_compile_definitions(runGraphQueries PRIVATE -DNDEBUG -DNDBGPRINT
-                                                   -DEXPBACKOFF)
+target_compile_definitions(runGraphQueries PRIVATE -DEXPBACKOFF)
+target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:RELEASE>:NDEBUG NDBGPRINT>) 
+target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:DEBUG>:DEBUG DBGPRINT>) 
 
 # Linking
 set(THREADS_PREFER_PTHREAD_FLAG ON)
