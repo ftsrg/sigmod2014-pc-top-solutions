@@ -82,34 +82,40 @@ struct PrintResults {
    }
 };
 
+static queryfiles::QueryParser* getQueryParser(int argc, char **argv) {
+   const string queryPath(argv[argc-1]);
+
+   io::MmapedFile queryFile(queryPath, O_RDONLY);
+   auto queries = new queryfiles::QueryFileParser(queryFile);
+   return queries;
+}
+
 int main(int argc, char **argv) {
 
-   if(argc < 3) {
-      cerr<<"Usage [runMain] <dataFolder> <queryFile>"<<endl;
+   if(argc < 2) {
+      cerr<<"Usage with query file: " << argv[0] <<" file <dataFolder> <queryFile>"<<endl;
+      cerr<<"Usage with query params: " << argv[0] <<" param <dataFolder> <queryNumber> <param1> <param2> ..."<<endl;
       return -1;
    }
 
    srand (time(NULL));
-   const auto start = awfy::chrono::now();
    bool excludes[4] = {false, false, false, false};
 
+   const auto start = awfy::chrono::now();
    awfy::counters::ProgramCounters counters(hardwareThreads);
    auto& threadCounts=counters.getThreadCounters();
    threadCounts.initThread();
    threadCounts.startTask(TaskGraph::Initialize);
 
-   const string dataPath(argv[argc-2]);
-   const string queryPath(argv[argc-1]);
-
-   io::MmapedFile queryFile(queryPath, O_RDONLY);
-   FileIndexes fileIndexes;
-
    Scheduler scheduler(counters);
    ScheduleGraph taskGraph(scheduler);
+   const string dataPath(argv[argc-2]);
 
-   queryfiles::QueryFileParser queries(queryFile);
-   queryfiles::QueryBatcher batches(queries);
+   auto* queries = getQueryParser(argc, argv);
+
+   queryfiles::QueryBatcher batches(*queries);
    
+   FileIndexes fileIndexes;
    runtime::QueryState queryState(taskGraph, scheduler, fileIndexes);
 
    initScheduleGraph<PrintResults, ParseAllBatches>(scheduler, taskGraph, fileIndexes, dataPath, batches, queryState, excludes,
@@ -119,5 +125,6 @@ int main(int argc, char **argv) {
 
    executeTaskGraph(hardwareThreads, scheduler, counters, threadCounts);
 
+   delete queries;
    return 0;
 }
