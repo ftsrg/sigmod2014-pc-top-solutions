@@ -31,8 +31,6 @@ namespace queryfiles {
 
    /// Parser for the query files
    class QueryParser {
-      tokenize::Tokenizer tokenizer;
-
    public:
       struct BaseQuery {
          char id;
@@ -70,9 +68,7 @@ namespace queryfiles {
          }
       };
 
-      QueryParser(io::MmapedFile& file);
-      QueryParser(const QueryParser&) = delete;
-      QueryParser(QueryParser&&) = delete;
+      virtual ~QueryParser() = default;
 
       static inline size_t maxQuerySize() {
          return 1024;
@@ -82,7 +78,27 @@ namespace queryfiles {
          return queryId - 49;
       }
 
-      inline int64_t readNext(void* resultPtr) {
+      virtual int64_t readNext(void* resultPtr) = 0;
+   };
+
+   class QueryFileParser : public QueryParser {
+      tokenize::Tokenizer tokenizer;
+
+   public:
+
+      QueryFileParser(io::MmapedFile& file);
+      QueryFileParser(const QueryParser&) = delete;
+      QueryFileParser(QueryParser&&) = delete;
+
+      static inline size_t maxQuerySize() {
+         return 1024;
+      }
+
+      static inline size_t getQueryIndex(char queryId) {
+         return queryId - 49;
+      }
+
+      int64_t readNext(void* resultPtr) override {
          if(!tokenizer.finished()) {
             auto iter=tokenizer.getPositionPtr();
             if(iter[5] == Query1::QueryId) {
@@ -208,7 +224,7 @@ namespace queryfiles {
       }
    };
 
-   QueryParser::QueryParser(io::MmapedFile& file) : tokenizer(file) {
+   QueryFileParser::QueryFileParser(io::MmapedFile& file) : tokenizer(file) {
       // -1 because assumes ending with newline
       tokenizer.limit=tokenizer.limit-1;
       madvise(file.mapping,file.size,MADV_SEQUENTIAL|MADV_WILLNEED);

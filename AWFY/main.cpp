@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
    Scheduler scheduler(counters);
    ScheduleGraph taskGraph(scheduler);
 
-   queryfiles::QueryParser queries(queryFile);
+   queryfiles::QueryFileParser queries(queryFile);
    queryfiles::QueryBatcher batches(queries);
    
    runtime::QueryState queryState(taskGraph, scheduler, fileIndexes);
