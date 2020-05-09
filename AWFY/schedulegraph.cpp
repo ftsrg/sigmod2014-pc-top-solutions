@@ -92,6 +92,8 @@ void ScheduleGraph::addEdge(TaskGraph::Node source, TaskGraph::Node target) {
    }
    assert(!found);
 
+   LOG_PRINT("[ScheduleGraphVisualize] "<< TaskGraph::getName(source) << " -> " << TaskGraph::getName(target) << ";");
+
    targets[source].insert(target);
    sources[target].insert(source);
 }
