@@ -24,6 +24,12 @@ add_executable(runGraphQueries main.cpp ${COMMON_SOURCES})
 # Include settings
 target_include_directories(runGraphQueries PRIVATE include)
 
+option(
+  PRINT_RESULTS
+  "In enabled, then the results of the queries are going to be printed to cout in Release mode. In Debug mode it is always printed."
+  OFF
+)
+
 # Compile settings
 target_compile_features(runGraphQueries PRIVATE cxx_std_11)
 target_compile_options(
@@ -46,6 +52,10 @@ target_compile_options(
 target_compile_definitions(runGraphQueries PRIVATE -DEXPBACKOFF)
 target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:RELEASE>:MEASURE>)
 target_compile_definitions(runGraphQueries PRIVATE $<$<NOT:$<CONFIG:RELEASE>>:DEBUG DBGPRINT>)
+
+if (PRINT_RESULTS)
+  target_compile_definitions(runGraphQueries PRIVATE PRINT_RESULTS)
+endif()
 
 # Linking
 set(THREADS_PREFER_PTHREAD_FLAG ON)
