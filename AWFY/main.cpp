@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #include <chrono>
+#include <thread>
 #include <memory>
 #include <math.h>
 #include <iomanip>
@@ -34,7 +35,7 @@ limitations under the License.
 #include "include/util/measurement.hpp"
 #include "include/util/memoryhooks.hpp"
 
-const uint32_t hardwareThreads=8; // Intel Xeon E5430 has 4 cores and no HT (2 sockets = 8 cores)
+const uint32_t hardwareThreads=std::thread::hardware_concurrency(); // Intel Xeon E5430 has 4 cores and no HT (2 sockets = 8 cores)
 
 struct ParseAllBatches {
    queryfiles::QueryBatcher& batches;
@@ -252,7 +253,12 @@ int main(int argc, char **argv) {
    executeTaskGraph(hardwareThreads, scheduler, counters, threadCounts);
 
    #ifdef MEASURE
-   std::cout << 'q' << reinterpret_cast<QueryParamParser*>(queries)->query->id << ',';
+   auto paramParser = dynamic_cast<QueryParamParser*>(queries);
+   if (paramParser != nullptr) {
+      std::cout << 'q' << paramParser->query->id << ',';
+   } else {
+      std::cout << "queries from file " << dataPath << ',';
+   }
    measurement::print(std::cout);
    #endif
    delete queries;
