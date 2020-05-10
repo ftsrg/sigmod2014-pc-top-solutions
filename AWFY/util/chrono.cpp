@@ -19,7 +19,7 @@ limitations under the License.
 awfy::chrono::Time awfy::chrono::now() {
    static const std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
    auto current=std::chrono::high_resolution_clock::now();
-   return std::chrono::duration_cast<std::chrono::milliseconds>(current-startTime).count();
+   return std::chrono::duration_cast<std::chrono::microseconds>(current-startTime).count();
 }
 
 void awfy::chrono::TimeFrame::start() {
