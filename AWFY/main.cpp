@@ -31,6 +31,7 @@ limitations under the License.
 #include "include/concurrent/scheduler.hpp"
 #include "include/concurrent/thread.hpp"
 #include "include/executioncommons.hpp"
+#include "include/util/measurement.hpp"
 #include "include/util/memoryhooks.hpp"
 
 const uint32_t hardwareThreads=8; // Intel Xeon E5430 has 4 cores and no HT (2 sockets = 8 cores)
@@ -59,7 +60,10 @@ struct PrintResults {
    { }
 
    void operator()() {
+      #if defined(PRINT_RESULTS) || defined(DEBUG)
       auto queryList=batches.getQueryList();
+
+      #ifdef DEBUG
       counters.printStats();
 
       auto end=awfy::chrono::now();
@@ -69,17 +73,19 @@ struct PrintResults {
       cerr<<"Q1:"<<batches.batchCounts[0]<<",Q2:"<<batches.batchCounts[1]<<",Q3:"<<batches.batchCounts[2]<<",Q4:"<<batches.batchCounts[3]<<endl;
 
       auto outputStart=awfy::chrono::now();
+      #endif
       // Print results
       for(auto queryIter=queryList.cbegin(); queryIter!=queryList.cend(); queryIter++) {
          // Compare results
          auto result = string((*queryIter)->result);
          cout<<result<<endl;
       }
+      #ifdef DEBUG
       end=awfy::chrono::now();
       cerr<<"OUT:"<<end-outputStart<<" ms"<<endl;
-      #ifdef DEBUG
       awfy::counters::AllocationStats stats=counters.getAllocationStats();
       cerr<<"MEM:"<<stats.totalBytes<<", "<<stats.totalAllocations<<endl;
+      #endif
       #endif
    }
 };
@@ -245,6 +251,10 @@ int main(int argc, char **argv) {
 
    executeTaskGraph(hardwareThreads, scheduler, counters, threadCounts);
 
+   #ifdef MEASURE
+   std::cout << 'q' << reinterpret_cast<QueryParamParser*>(queries)->query->id << ',';
+   measurement::print(std::cout);
+   #endif
    delete queries;
    delete queryFile;
    return 0;

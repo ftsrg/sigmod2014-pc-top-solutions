@@ -19,7 +19,21 @@ limitations under the License.
 #include <assert.h>
 #include <iostream>
 #include "include/util/log.hpp"
+#include "include/util/measurement.hpp"
 
+#ifdef MEASURE
+   #define TASK_START(node)                         \
+      if (node == TaskGraph::Node::Query1           \
+            || node == TaskGraph::Node::Query2      \
+            || node == TaskGraph::Node::Query3      \
+            || node == TaskGraph::Node::Query4) {   \
+         measurement::queryStart();                 \
+      } else if (node == TaskGraph::Node::Finish) { \
+         measurement::finished();                   \
+      }
+#else
+   #define TASK_START(node)
+#endif
 
 void nodeFunctionExec(void* arguments) {
    auto fnPtr = static_cast<std::function<void()>*>(arguments);
@@ -167,6 +181,7 @@ Task schedulerTask(SchedulerRunner* builder, TaskGraph::Node node) {
 }
 
 void ScheduleGraph::runTask(TaskGraph::Node task) {
+   TASK_START(task);
    LOG_PRINT("[ScheduleGraph] Scheduling task node "<<TaskGraph::getName(task));
    auto fn=taskFunction[task];
    taskFunction[task]=nullptr;

@@ -5,6 +5,7 @@ set(COMMON_SOURCES
     util/chrono.cpp
     util/counters.cpp
     util/io.cpp
+    util/measurement.cpp
     util/memoryhooks.cpp
     alloc.cpp
     indexes.cpp
@@ -27,7 +28,7 @@ target_include_directories(runGraphQueries PRIVATE include)
 target_compile_features(runGraphQueries PRIVATE cxx_std_11)
 target_compile_options(
   runGraphQueries
-  PRIVATE -march=core2
+  PRIVATE -march=native
           -msse4.1
           -c
           $<$<CONFIG:RELEASE>:-O3>
@@ -43,7 +44,7 @@ target_compile_options(
           -funroll-all-loops
           -fvariable-expansion-in-unroller)
 target_compile_definitions(runGraphQueries PRIVATE -DEXPBACKOFF)
-target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:RELEASE>:NDEBUG NDBGPRINT>) 
+target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:RELEASE>:NDEBUG NDBGPRINT MEASURE>) 
 target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:DEBUG>:DEBUG DBGPRINT>) 
 
 # Linking
