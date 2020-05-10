@@ -2,7 +2,7 @@
 
 | Solution | Status | Who is working on |
 | ---------|--------|-------------------|
-| AWFY | WIP | Kovi |
+| AWFY | Done | Kovi |
 | blxlrsmb | - | |
 | Cracker | - | |
 | H_minor_free | - | |

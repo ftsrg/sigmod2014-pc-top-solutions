@@ -1,0 +1,36 @@
+=====================
+Submission Guidelines
+=====================
+The SIGMOD 2014 programming contest management system accepts submissions of the 
+form [all.tar.gz]. Each submission must contain the following files/directories:
+- run.sh: This shell script must take two arguments: [path_to_data_directory] 
+  and [path_to_query_file]. This script is responsible for running the 
+  participant-prepared executable file(s) to evaluate all of the queries found 
+  in [path_to_query_file] on the data found in [path_to_data_directory], and 
+  printing the results to standard output (stdout).
+- README: This file contains information about the submission including 
+  (1) team name, (2) for each team member, name, email, institution, department, 
+  and degree, (3) supervisor name (if any), (4) a brief description of techniques
+  for executing queries, and (5) all of the third party code used.
+- src/: This directory must contain all of the source code. The executable 
+  file(s) called by run.sh must be located outside this directory.
+- src/compile.sh: This shell script must be able to compile the source code 
+  contained in the src/ directory. The produced executable file(s) must be 
+  located within the src/ directory. These files must be equivalent to (i.e., given
+  the same workload, produce the same output as) the ready-to-execute (binary) files 
+  provided by the participants.
+
+Notes: 
+- Please ensure that tar -zxvf all.tar.gz places run.sh and src/ in the current 
+  directory.
+- Each submission must be fully open source under some license such that we can 
+  publish and make the code from the finalists' implementations freely available. 
+  Submissions which cannot be made freely available as open source will be 
+  disqualified. 
+- We request the participants to submit executable files so that their 
+  implementations can be evaluated even if their submitted source code does not 
+  compile on our machine (e.g., due to compatibility, access right problems).
+- Before submission, please ensure that your program output for our sample graph 
+  data and queries is the same as the answers we provided (except for comments 
+  that begin with %). If you have a question regarding the correctness of the 
+  provided answers, please contact us at SIGMOD14contest@cs.albany.edu.

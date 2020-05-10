@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "DebugFile",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+                "/home/kovi/Downloads/p1k/",
+                "FILE",
+                "/home/kovi/Repos/sigmod2014-pc/cpp/release/the_query.txt"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "DebugParam",
+            "program": "${command:cmake.launchTargetPath}",
+            "args": [
+                "/home/kovi/Downloads/p1k/",
+                "PARAM",
+                "2",
+                "4",
+                "1986-03-23"
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
