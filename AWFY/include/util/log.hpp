@@ -20,10 +20,10 @@ limitations under the License.
 #include "chrono.hpp"
 
 #ifdef DEBUG
-   #ifdef NDBGPRINT
-      #define LOG_PRINT(X)
-   #else
+   #ifdef DBGPRINT
       #define LOG_PRINT(X) std::cerr<<awfy::chrono::now()<<" "<<X<<std::endl
+   #else
+      #define LOG_PRINT(X)
    #endif
 #else
    #define LOG_PRINT(X)

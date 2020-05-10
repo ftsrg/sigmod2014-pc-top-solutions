@@ -44,8 +44,8 @@ target_compile_options(
           -funroll-all-loops
           -fvariable-expansion-in-unroller)
 target_compile_definitions(runGraphQueries PRIVATE -DEXPBACKOFF)
-target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:RELEASE>:NDEBUG NDBGPRINT MEASURE>) 
-target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:DEBUG>:DEBUG DBGPRINT>) 
+target_compile_definitions(runGraphQueries PRIVATE $<$<CONFIG:RELEASE>:MEASURE>)
+target_compile_definitions(runGraphQueries PRIVATE $<$<NOT:$<CONFIG:RELEASE>>:DEBUG DBGPRINT>)
 
 # Linking
 set(THREADS_PREFER_PTHREAD_FLAG ON)
