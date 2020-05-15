@@ -4,16 +4,16 @@
 
 ### Debug
 ```
-mkdir build
-cd build
+mkdir cmake-build-debug
+cd cmake-build-debug
 cmake ..
 cmake --build . --parallel
 ```
 
 ### Release
 ```
-mkdir build
-cd build
+mkdir cmake-build-release
+cd cmake-build-release
 cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . --parallel
 ```
