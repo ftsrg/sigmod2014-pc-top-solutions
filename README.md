@@ -1,7 +1,7 @@
-# sigmod14-pc-top-solutions
+# sigmod2014-pc-top-solutions
 
-| Solution | Status | Who is working on |
-| ---------|--------|-------------------|
+| Solution | Status | Who is working on it |
+| ---------|--------|----------------------|
 | AWFY | Done | Kovi |
 | blxlrsmb | - | |
 | Cracker | - | |
