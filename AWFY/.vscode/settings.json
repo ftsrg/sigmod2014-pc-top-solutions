@@ -1,0 +1,15 @@
+{
+    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
+    "files.associations": {
+        "iostream": "cpp",
+        "unordered_map": "cpp",
+        "*.tcc": "cpp",
+        "bitset": "cpp",
+        "cstdlib": "cpp",
+        "optional": "cpp",
+        "array": "cpp",
+        "new": "cpp",
+        "chrono": "cpp",
+        "iosfwd": "cpp"
+    }
+}
