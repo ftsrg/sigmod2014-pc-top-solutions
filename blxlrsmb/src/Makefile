@@ -55,51 +55,51 @@ all: $(TARGET)
 sinclude $(DEPFILES)
 
 $(OBJ_DIR)/%.o: %.cpp
-	@#echo "[cpp] $< ..."
-	@$(CXX) -c $< -o $@ $(CXXFLAGS)
+	#echo "[cpp] $< ..."
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 $(OBJ_DIR)/memcpy.o: lib/memcpy.c
-	@#echo "[memcpy.o] ..."
-	@$(CC) -c $< -o $@
+	#echo "[memcpy.o] ..."
+	$(CC) -c $< -o $@
 
 
 $(OBJ_DIR)/%.d: %.cpp  Makefile
-	@mkdir -p $(dir $@)
-	@#echo "[dep] $< ..."
-	@$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
+	mkdir -p $(dir $@)
+	#echo "[dep] $< ..."
+	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
 
 
 #$(TARGET): $(OBJS)
 $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
-	@#echo "Linking ..."
-	@$(CXX) $^ $(LIBS) -o $@ $(LDFLAGS)
-	@#echo "done."
+	#echo "Linking ..."
+	$(CXX) $^ $(LIBS) -o $@ $(LDFLAGS)
+	#echo "done."
 
 $(OBJ_DIR)/gen_query.o: gen_query.cc
-	@#echo "[gen_query.o] ..."
-	@$(CXX) -c $< -o $@ $(CXXFLAGS)
+	#echo "[gen_query.o] ..."
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 $(OBJ_DIR)/mem_monitor.o: mem_monitor.cc
-	@#echo "[mem_monitor.o] ..."
-	@$(CXX) -c $< -o $@ $(CXXFLAGS)
+	#echo "[mem_monitor.o] ..."
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 gen_query: $(filter-out $(OBJ_DIR)/main.o $(OBJ_DIR)/query2.o, $(OBJS)) $(OBJ_DIR)/gen_query.o
-	@#echo "Linking gen_query"
-	@$(CXX) $^ -o $@ $(LDFLAGS)
-	@#echo "done."
+	#echo "Linking gen_query"
+	$(CXX) $^ -o $@ $(LDFLAGS)
+	#echo "done."
 
 mem_monitor: $(OBJ_DIR)/mem_monitor.o $(OBJ_DIR)/lib/utils.o $(OBJ_DIR)/lib/Timer.o $(OBJ_DIR)/lib/debugutils.o
-	@#echo "Linking mem_monitor"
-	@$(CXX) $^ -o $@ $(LDFLAGS)
-	@#echo "done."
+	#echo "Linking mem_monitor"
+	$(CXX) $^ -o $@ $(LDFLAGS)
+	#echo "done."
 
 
 clean:
-	@rm -rf $(OBJ_DIR) gen_query
+	rm -rf $(OBJ_DIR) gen_query
 
 rebuild:
-	@+make clean
-	@+make
+	+make clean
+	+make
 
 TEST_DATA = ../data/1k
 
