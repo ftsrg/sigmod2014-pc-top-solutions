@@ -20,6 +20,7 @@
 #include <limits>
 #include <condition_variable>
 #include <map>
+#include <functional>
 #include <string>
 #include <fstream>
 #include <memory>
