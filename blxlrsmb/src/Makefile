@@ -33,6 +33,7 @@ DEFINES += -DDEBUG
 #LDFLAGS += -lprofiler
 OPTFLAGS += -Wall -Wextra -Wconversion
 endif
+LDFLAGS += -no-pie
 
 CONCURFLAGS = -fopenmp -pthread
 CXXFLAGS = $(INCLUDE_DIR)
