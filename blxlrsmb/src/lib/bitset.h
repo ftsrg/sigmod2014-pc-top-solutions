@@ -8,7 +8,6 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
-#include "allocator.hh"
 #include "common.h"
 #include "Timer.h"
 #include "debugutils.h"

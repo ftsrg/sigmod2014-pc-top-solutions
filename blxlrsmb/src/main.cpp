@@ -9,7 +9,6 @@
 #include <thread>
 
 #include "lib/hash_lib.h"
-#include "lib/allocator.hh"
 #include "lib/Timer.h"
 #include "lib/debugutils.h"
 #include "lib/common.h"
