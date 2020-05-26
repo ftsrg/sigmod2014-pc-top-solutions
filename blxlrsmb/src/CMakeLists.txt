@@ -33,14 +33,8 @@ target_include_directories(main SYSTEM PRIVATE third-party)
 target_compile_features(main PRIVATE cxx_std_11)
 
 target_compile_options(
-  main
-  PRIVATE $<$<CONFIG:RELEASE>:-O3>
-          $<$<NOT:$<CONFIG:RELEASE>>:-Wno-unused-result
-          -Wno-unused-local-typedefs
-          -Wall
-          -Wextra
-          -Wconversion
-          >)
+  main PRIVATE $<$<NOT:$<CONFIG:RELEASE>>:-Wno-unused-result
+               -Wno-unused-local-typedefs -Wall -Wextra -Wconversion >)
 
 target_compile_definitions(main PRIVATE GOOGLE_HASH)
 target_compile_definitions(main PRIVATE $<$<CONFIG:RELEASE>:NUM_THREADS=4>)
@@ -58,5 +52,4 @@ target_link_libraries(
   main ${CMAKE_SOURCE_DIR}/third-party/libtcmalloc.a
   ${CMAKE_SOURCE_DIR}/third-party/libunwind.a
   ${CMAKE_SOURCE_DIR}/third-party/liblzma.a)
-target_link_options(main PRIVATE -Wl,--wrap=memcpy -static-libstdc++ -no-pie
-                    -O3)
+target_link_options(main PRIVATE -Wl,--wrap=memcpy -static-libstdc++ -no-pie)
