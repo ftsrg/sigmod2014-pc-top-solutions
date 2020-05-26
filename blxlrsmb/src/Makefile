@@ -37,7 +37,7 @@ LDFLAGS += -no-pie
 
 CONCURFLAGS = -fopenmp -pthread
 CXXFLAGS = $(INCLUDE_DIR)
-CXXFLAGS += -std=c++0x $(CONCURFLAGS)
+CXXFLAGS += -std=c++11 $(CONCURFLAGS)
 CXXFLAGS += $(DEFINES) $(OPTFLAGS)
 LDFLAGS += $(CONCURFLAGS) $(OPTFLAGS)
 
@@ -47,28 +47,23 @@ CXX ?= g++
 SHELL = bash
 ccSOURCES = $(shell find . -name "*.cpp" | sed 's/^\.\///g')
 OBJS = $(addprefix $(OBJ_DIR)/,$(ccSOURCES:.cpp=.o))
-DEPFILES = $(OBJS:.o=.d)
 
 .PHONY: all clean run rebuild
 
 all: $(TARGET)
 
-sinclude $(DEPFILES)
+LIB_DIR = $(OBJ_DIR)/lib
 
-$(OBJ_DIR)/%.o: %.cpp
+$(LIB_DIR):
+	mkdir -p $@
+
+$(OBJ_DIR)/%.o: $(LIB_DIR) %.cpp
 	#echo "[cpp] $< ..."
-	$(CXX) -c $< -o $@ $(CXXFLAGS)
+	$(CXX) -c $(filter %.cpp, $^) -o $@ $(CXXFLAGS)
 
 $(OBJ_DIR)/memcpy.o: lib/memcpy.c
 	#echo "[memcpy.o] ..."
 	$(CC) -c $< -o $@
-
-
-$(OBJ_DIR)/%.d: %.cpp  Makefile
-	mkdir -p $(dir $@)
-	#echo "[dep] $< ..."
-	$(CXX) $(CXXFLAGS) $(INCLUDE_DIR) $(DEFINES) -MM -MT "$(OBJ_DIR)/$(<:.cpp=.o) $(OBJ_DIR)/$(<:.cpp=.d)" "$<"  > "$@"
-
 
 #$(TARGET): $(OBJS)
 $(TARGET): $(OBJS) $(OBJ_DIR)/memcpy.o
