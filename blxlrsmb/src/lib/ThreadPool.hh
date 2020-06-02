@@ -39,8 +39,8 @@ namespace __ThreadPoolImpl {
 	template<class Function, class Callback>
 	class runner : public runner_base {
 		public:
-			Function &&f;
-			Callback &&callback;
+			Function f;
+			Callback callback;
 
 			runner(Function &&f, Callback &&callback) :
 				f(std::forward<Function>(f)), callback(std::forward<Callback>(callback))
