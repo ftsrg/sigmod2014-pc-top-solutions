@@ -3,7 +3,7 @@
 | Solution | Status | Who is working on it |
 | ---------|--------|----------------------|
 | AWFY | Done | Kovi |
-| blxlrsmb | - | |
+| blxlrsmb | Done | Kovi |
 | Cracker | - | |
 | H_minor_free | - | |
 | VIDA | - | |
