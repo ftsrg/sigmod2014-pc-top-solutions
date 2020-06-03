@@ -22,6 +22,9 @@
 #include "query2.h"
 #include "query3.h"
 #include "query4.h"
+
+#include "measurement.h"
+
 using namespace std;
 
 
@@ -35,6 +38,35 @@ vector<Query2> q2_set;
 vector<Query3> q3_set;
 vector<Query4> q4_set;
 
+
+void parse_query(int argc, char **argv) {
+	switch(argv[3][0]) {
+		case '1': {
+			q1_set.emplace_back(std::stol(argv[4]), std::stol(argv[5]), std::stol(argv[6]));
+			break;
+		}
+		case '2': {
+			int k = std::stol(argv[4]);
+			int y, m, d;
+			sscanf(argv[5], "%d-%d-%d)", &y, &m, &d);
+			d = 10000 * y + 100 * m + d;
+			q2_set.emplace_back(k, d, (int)q2_set.size());
+			break;
+		}
+		case '3': {
+			q3_set.emplace_back(std::stol(argv[4]), std::stol(argv[5]), std::string(argv[6]));
+			break;
+		}
+		case '4': {
+			string tag_name(argv[5]);
+			q4_set.emplace_back(std::stol(argv[4]), tag_name);
+			q4_tag_set.insert(tag_name);
+			break;
+		}
+		default:
+			throw "invalid query number";
+	}
+}
 
 void read_query(const string& fname) {
 	FILE* fin = fopen(fname.c_str(), "r");
@@ -92,12 +124,23 @@ inline void endTask(int) {
 	}
 }
 
+const static std::string FILE_FLAG = "FILE";
+const static std::string PARAM_FLAG = "PARAM";
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
+	if(argc < 4) {
+		cerr<<"Usage with query file: " << argv[0] << " <dataFolder> " << FILE_FLAG << " <queryFile>"<<endl;
+		cerr<<"Usage with query params: " << argv[0] << " <dataFolder> " << PARAM_FLAG << " <queryNumber> <param1> <param2> ..."<<endl;
+		return -1;
+	}
+
 	globaltimer.reset();
 	threadpool = new ThreadPool(NUM_THREADS);
 	Timer timer;
+	#ifdef MEASURE
+	measurement::now();
+   	#endif
 	// initialize global variables...
 #ifdef GOOGLE_HASH
 	q4_tag_set.set_empty_key("");
@@ -107,7 +150,14 @@ int main(int argc, char* argv[]) {
 	// end
 	string dir(argv[1]);
 
-	read_query(string(argv[2]));		// read query first, so we can read data optionally later
+	bool printQueryNumber = false;
+	if (argv[2] == FILE_FLAG) {
+		read_query(string(argv[3]));		// read query first, so we can read data optionally later
+	} else if (argv[2] == PARAM_FLAG) {
+		parse_query(argc, argv);
+		printQueryNumber = true;
+	}
+
 	q4.ans.resize(q4_set.size());
 	q3.global_answer.resize(q3_set.size());
 
@@ -128,6 +178,9 @@ int main(int argc, char* argv[]) {
 	threadpool->enqueue(bind(do_read_tags_forums_places, dir), endTask);
 	WAIT_FOR(tag_read);
 	WAIT_FOR(can_start_queries);
+	#ifdef MEASURE
+	measurement::queryStart();
+   	#endif
 	threadpool->enqueue(start_1, 20);
 	threadpool->enqueue(start_4);
 	threadpool->enqueue(start_2);
@@ -140,23 +193,36 @@ int main(int argc, char* argv[]) {
 	threadpool->condition.notify_all();
 	delete threadpool;		// will wait to join all thread
 
+	#ifdef PRINT_RESULTS
 	q1.print_result();
 	q2.print_result();
 	q3.print_result();
 	q4.print_result();
+	#endif
+
+	#ifdef MEASURE
+	measurement::finished();
+	if (printQueryNumber) {
+		std::cout << 'q' << argv[3][0] << ',';
+	} else {
+		std::cout << "queries from file " << argv[3] << ',';
+	}
+	measurement::print(std::cout);
+   	#endif
 
 	//fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
-	tot_time[3] += TotalTimer::rst["Q3"];
-	tot_time[4] += TotalTimer::rst["Q4"];
-	if (Data::nperson > 10000) {
-		for (int i = 1; i <= 4; i ++)
-			fprintf(stderr, "q%d:%.4fs ", i, tot_time[i]);
-		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 2"]);
-		fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 3"]);
-		fprintf(stderr, "%.4lf ", TotalTimer::rst["estimate random"]);
-	}
+	// tot_time[3] += TotalTimer::rst["Q3"];
+	// tot_time[4] += TotalTimer::rst["Q4"];
+	// if (Data::nperson > 10000) {
+	// 	for (int i = 1; i <= 4; i ++)
+	// 		fprintf(stderr, "q%d:%.4fs ", i, tot_time[i]);
+	// 	fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 2"]);
+	// 	fprintf(stderr, "%.4lf ", TotalTimer::rst["depth 3"]);
+	// 	fprintf(stderr, "%.4lf ", TotalTimer::rst["estimate random"]);
+	// }
 	//fprintf(stderr, "\nTime: %.4fs\n", timer.get_time());
 	Data::free();
 	TotalTimer::print();
 	ManualTotalTimer::print();
+	return 0;
 }
