@@ -7,6 +7,7 @@
 #include <string>
 #include <omp.h>
 #include <thread>
+#include <atomic>
 
 #include "lib/hash_lib.h"
 #include "lib/Timer.h"
@@ -82,6 +83,15 @@ void read_query(const string& fname) {
 	fclose(fin);
 }
 
+std::atomic<int> numberOfFinishedSubtasks{0};
+inline void endTask(int) {
+	const auto finishedTasks = numberOfFinishedSubtasks.fetch_add(1, std::memory_order_relaxed);
+	if (finishedTasks == 1) {
+		can_start_queries = true;
+		can_start_queries_cv.notify_all();
+	}
+}
+
 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char* argv[]) {
@@ -101,7 +111,7 @@ int main(int argc, char* argv[]) {
 	q4.ans.resize(q4_set.size());
 	q3.global_answer.resize(q3_set.size());
 
-	threadpool->enqueue(bind(do_read_comments, dir), start_1, 20);
+	threadpool->enqueue(bind(do_read_comments, dir), endTask, 20);
 	read_data(dir);
 	print_debug("Read return at %lf secs\n", timer.get_time());
 	/*
@@ -115,8 +125,11 @@ int main(int argc, char* argv[]) {
 	 *}
 	 */
 
-	threadpool->enqueue(bind(do_read_tags_forums_places, dir), start_4);
+	threadpool->enqueue(bind(do_read_tags_forums_places, dir), endTask);
 	WAIT_FOR(tag_read);
+	WAIT_FOR(can_start_queries);
+	threadpool->enqueue(start_1, 20);
+	threadpool->enqueue(start_4);
 	threadpool->enqueue(start_2);
 	start_3();
 	/*

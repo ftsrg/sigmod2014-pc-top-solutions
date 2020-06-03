@@ -50,7 +50,7 @@ inline int do_read_tags_forums_places(const std::string dir) {
 }
 
 
-inline void start_1(int) {
+inline void start_1() {
 	PP("start1");
 	Timer timer;
 //	q1.pre_work();		// sort Data::frien
@@ -81,7 +81,7 @@ inline void start_3() {
 	q3_set = std::vector<Query3>();
 }
 
-inline void start_4(int) {
+inline void start_4() {
 	//fprintf(stderr, "start4\n");
 	//std::this_thread::sleep_for(std::chrono::seconds(7));
 	Timer timer;

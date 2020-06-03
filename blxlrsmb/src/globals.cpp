@@ -16,6 +16,7 @@ using namespace std;
 DEFINE_SIGNAL(tag_read)
 DEFINE_SIGNAL(friends_hash_built)
 DEFINE_SIGNAL(q2_finished)
+DEFINE_SIGNAL(can_start_queries)
 #undef DEFINE_SIGNAL
 
 Timer globaltimer;

@@ -28,6 +28,7 @@ extern Timer globaltimer;
 DECLARE_SIGNAL(tag_read)
 DECLARE_SIGNAL(friends_hash_built)
 DECLARE_SIGNAL(q2_finished)
+DECLARE_SIGNAL(can_start_queries)
 
 #undef DECLARE_SIGNAL
 
