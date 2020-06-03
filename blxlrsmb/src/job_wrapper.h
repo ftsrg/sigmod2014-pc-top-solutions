@@ -82,7 +82,7 @@ inline void start_3() {
 }
 
 inline void start_4(int) {
-	fprintf(stderr, "start4\n");
+	//fprintf(stderr, "start4\n");
 	//std::this_thread::sleep_for(std::chrono::seconds(7));
 	Timer timer;
 	size_t s = q4_set.size();

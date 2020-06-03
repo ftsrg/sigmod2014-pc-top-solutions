@@ -634,7 +634,7 @@ void read_comments_tim(const std::string &dir) {
 		while (*seek++ != '\n');
 		ULL cid = 0;
 		while (*seek != '|') cid = cid * 10 + (*(seek++) - '0');
-		fprintf(stderr, "ncmt<%llu\n", cid); fflush(stderr);
+		//fprintf(stderr, "ncmt<%llu\n", cid); fflush(stderr);
 		madvise(mapped, size, MADV_SEQUENTIAL);
 		MMAP_READ_TILL_EOL();
 		owner.reserve(cid / 10 + 1000);
