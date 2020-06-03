@@ -31,7 +31,7 @@ target_include_directories(main PRIVATE include)
 target_include_directories(main SYSTEM PRIVATE src/third-party)
 
 # Compile settings
-target_compile_features(main PRIVATE cxx_std_11)
+target_compile_features(main PRIVATE cxx_std_17)
 
 option(
   PRINT_RESULTS
