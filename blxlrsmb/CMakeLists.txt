@@ -44,7 +44,7 @@ target_compile_options(
                -Wno-unused-local-typedefs -Wall -Wextra -Wconversion >)
 
 target_compile_definitions(main PRIVATE GOOGLE_HASH)
-target_compile_definitions(main PRIVATE $<$<CONFIG:RELEASE>:NUM_THREADS=4 MEASURE>)
+target_compile_definitions(main PRIVATE $<$<CONFIG:RELEASE>:MEASURE>)
 target_compile_definitions(main PRIVATE $<$<NOT:$<CONFIG:RELEASE>>:DEBUG>)
 
 if (PRINT_RESULTS)
