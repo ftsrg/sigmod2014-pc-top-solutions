@@ -54,6 +54,11 @@ int getf(int a, vector<int> &f) {
 }
 
 void Query2Handler::work() {
+	if (queries.empty()) {
+		q2_finished = true;
+		q2_finished_cv.notify_all();
+		return;
+	}
 	vector<vector<int>> ans;
 	f.resize(Data::ntag);
 	sum.resize(Data::ntag);

@@ -21,10 +21,10 @@ class FinishTimeContinuation {
 				std::lock_guard<std::mutex> lock(count_mutex);
 				count --;
 			}
-			if (count == 0) {
-				fprintf(stderr, "%s: %f secs\n", prompt.c_str(), globaltimer.get_time());
-			fflush(stderr);
-			}
+			// if (count == 0) {
+			// 	fprintf(stderr, "%s: %f secs\n", prompt.c_str(), globaltimer.get_time());
+			// fflush(stderr);
+			// }
 		}
 
 		int get_count() const { return count; }

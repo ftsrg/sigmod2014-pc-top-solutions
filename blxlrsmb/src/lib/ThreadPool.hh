@@ -141,7 +141,7 @@ inline ThreadPool::~ThreadPool()
 		std::lock_guard<std::mutex> lock(queue_mutex);
 		stop = true;
 	}
-	//condition.notify_all();
+	condition.notify_all();
 	for(size_t i = 0;i<workers.size();++i)
 		workers[i].join();
 }

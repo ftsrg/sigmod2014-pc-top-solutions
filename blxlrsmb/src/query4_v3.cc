@@ -176,7 +176,7 @@ vector<int> Query4Calculator::work() {
 
 		// estimate s using contracted graph
 		int nr_vtx = (int)cgraph.size();
-		fprintf(stderr, "contract_graph: nr_vtx: %d/%d\n", nr_vtx, (int)np);
+		// fprintf(stderr, "contract_graph: nr_vtx: %d/%d\n", nr_vtx, (int)np);
 		cgraph_estimated_s.resize(nr_vtx);
 
 		{
@@ -283,8 +283,8 @@ vector<int> Query4Calculator::work() {
 
 	auto time = timer.get_time();
 	print_debug("total: %f secs\n", time);
-	if (time > 0.1)
-		fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
+	// if (time > 0.1)
+	// 	fprintf(stderr, "cnt: %f-%f %lu/%d/%d/%d/%d\n", time_phase1, time, np, cnt, k, (int)diameter, (int)est_dist_max);
 	return move(ans);
 }
 
@@ -442,9 +442,9 @@ void Query4Calculator::estimate_all_s_using_delta_bfs(int est_dist_max) {
 		}
 	}
 
-	fprintf(stderr, "search_cutoff: %f %d/%d restart: %d\n",
-			(double)nr_searched / nr_expect_to_search, nr_expect_to_search,
-			nr_searched, nr_search_restart);
+	// fprintf(stderr, "search_cutoff: %f %d/%d restart: %d\n",
+	// 		(double)nr_searched / nr_expect_to_search, nr_expect_to_search,
+	// 		nr_searched, nr_search_restart);
 }
 
 int Query4Calculator::bfs(const std::vector<std::vector<int>> &graph,
