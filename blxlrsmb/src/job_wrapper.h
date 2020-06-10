@@ -36,9 +36,9 @@ extern std::vector<Query4> q4_set;
 inline int do_read_comments(const std::string dir) {
 	Timer timer;
 	read_comments_tim(dir);
-	if (Data::nperson > 11000)
-		fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
-	fflush(stderr);
+	// if (Data::nperson > 11000)
+	// 	fprintf(stderr, "r cmt: %.4lf\n", timer.get_time());
+	// fflush(stderr);
 	return 0;
 }
 inline int do_read_tags_forums_places(const std::string dir) {

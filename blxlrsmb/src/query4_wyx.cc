@@ -203,15 +203,15 @@ vector<int> Query4Calculator::work() {
 		if (print < 3) {
 
 #endif
-			fprintf(stderr, "%lu/%d/%dd%d:%.4lf\n", np, cnt, k,
-					estimator.depth, timer.get_time());
-			fflush(stderr);
+			// fprintf(stderr, "%lu/%d/%dd%d:%.4lf\n", np, cnt, k,
+			// 		estimator.depth, timer.get_time());
+			// fflush(stderr);
 #ifndef DEBUG
 		}
 #endif
-		if (estimator.cutcnt > 1000)
-			fprintf(stderr, "cut%d~%d~%d/%d\n", exact_s[ans.front()], exact_s[ans.back()],
-					sum_bound, estimator.cutcnt);
+		// if (estimator.cutcnt > 1000)
+		// 	fprintf(stderr, "cut%d~%d~%d/%d\n", exact_s[ans.front()], exact_s[ans.back()],
+		// 			sum_bound, estimator.cutcnt);
 		print ++;
 	}
 	return move(ans);

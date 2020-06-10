@@ -117,7 +117,7 @@ SSEUnionSetEstimator::SSEUnionSetEstimator(
 
 	static int print = 0;
 	if (print < 3) {
-		fprintf(stderr, "alloc%d,%.4lf\n", np, init.get_time());
+		// fprintf(stderr, "alloc%d,%.4lf\n", np, init.get_time());
 		print ++;
 	}
 

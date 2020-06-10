@@ -114,9 +114,9 @@ void Query3Calculator::init(const string &p)
 				tmp.begin(), tmp.end(), pset.begin());
 		pset.resize(std::distance(pset.begin(), pset_end));
 	}
-	if (pset.size() > 100000) {
-		fprintf(stderr, "psize%lu\n", pset.size()); fflush(stderr);
-	}
+	// if (pset.size() > 100000) {
+	// 	fprintf(stderr, "psize%lu\n", pset.size()); fflush(stderr);
+	// }
 
 	people.clear();
 	FOR_ITR(it1, pset)

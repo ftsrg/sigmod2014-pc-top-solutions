@@ -153,8 +153,8 @@ void read_comments(const string &dir) {
 		}
 		fclose(fin);
 	}
-	if (Data::nperson > 11000)
-		fprintf(stderr, "1:%.4lf\n", timer.get_time());
+	// if (Data::nperson > 11000)
+	// 	fprintf(stderr, "1:%.4lf\n", timer.get_time());
 
 
 //	int max_diff = 0;
@@ -218,8 +218,8 @@ void read_comments(const string &dir) {
 		 */
 	}
 	//	PP(max_diff);
-	if (Data::nperson > 11000)
-		fprintf(stderr, "2:%.4lf\n", timer.get_time());
+	// if (Data::nperson > 11000)
+	// 	fprintf(stderr, "2:%.4lf\n", timer.get_time());
 
 	// omp likely to crash?
 	//#pragma omp parallel for schedule(static) num_threads(4)
@@ -230,8 +230,8 @@ void read_comments(const string &dir) {
 			itr->ncmts = min(m[itr->pid], comment_map[itr->pid][i]);
 		}
 	}
-	if (Data::nperson > 11000)
-		fprintf(stderr, "e:%.4lf\n", timer.get_time());
+	// if (Data::nperson > 11000)
+	// 	fprintf(stderr, "e:%.4lf\n", timer.get_time());
 	print_debug("Read comment spent %lf secs\n", timer.get_time());
 }
 
