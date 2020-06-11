@@ -13,10 +13,10 @@ mkdir cmake-build-debug && cd cmake-build-debug && cmake .. && cmake --build . -
 **Use this for benchmarking:**
 
 ```bash
-mkdir cmake-build-release && cd cmake-build-release && cmake .. -DCMAKE_BUILD_TYPE=Release && cmake --build . --parallel
+rm -rf cmake-build-release && mkdir cmake-build-release && cd cmake-build-release && cmake .. -DCMAKE_BUILD_TYPE=Release -DPRINT_RESULTS=1 && cmake --build . --parallel
 ```
 
-If you want to print out the results then use `cmake .. -DCMAKE_BUILD_TYPE=Release -DPRINT_RESULTS=1` to generate CMake files.
+Remove `-DPRINT_RESULTS=1` if result column is not necessary.
 
 ## How to measure
 Measure only in **Release mode** and using **CLI parameters**, otherwise the results are not accurate. The output is in `<query e.g. q4>,<loading time in μs>,<query running time in μs>` format.
