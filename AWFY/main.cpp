@@ -49,48 +49,6 @@ struct ParseAllBatches {
    }
 };
 
-struct PrintResults {
-   awfy::counters::ProgramCounters& counters;
-   ScheduleGraph& taskGraph;
-   queryfiles::QueryBatcher& batches;
-   FileIndexes& fileIndexes;
-   const string& dataPath;
-   awfy::chrono::Time start;
-   PrintResults(awfy::counters::ProgramCounters& counters, ScheduleGraph& taskGraph, queryfiles::QueryBatcher& batches, FileIndexes& fileIndexes, const string& dataPath, awfy::chrono::Time start)
-      : counters(counters), taskGraph(taskGraph), batches(batches), fileIndexes(fileIndexes), dataPath(dataPath), start(start)
-   { }
-
-   void operator()() {
-      #if defined(PRINT_RESULTS) || defined(DEBUG)
-      auto queryList=batches.getQueryList();
-
-      #ifdef DEBUG
-      counters.printStats();
-
-      auto end=awfy::chrono::now();
-      auto duration=end-start;
-
-      cerr<<"DUR: "<<duration<<"ms, Busy: "<<(awfy::chrono::now()-end)<<" ms"<<endl;
-      cerr<<"Q1:"<<batches.batchCounts[0]<<",Q2:"<<batches.batchCounts[1]<<",Q3:"<<batches.batchCounts[2]<<",Q4:"<<batches.batchCounts[3]<<endl;
-
-      auto outputStart=awfy::chrono::now();
-      #endif
-      // Print results
-      for(auto queryIter=queryList.cbegin(); queryIter!=queryList.cend(); queryIter++) {
-         // Compare results
-         auto result = string((*queryIter)->result);
-         cout<<result<<endl;
-      }
-      #ifdef DEBUG
-      end=awfy::chrono::now();
-      cerr<<"OUT:"<<end-outputStart<<" ms"<<endl;
-      awfy::counters::AllocationStats stats=counters.getAllocationStats();
-      cerr<<"MEM:"<<stats.totalBytes<<", "<<stats.totalAllocations<<endl;
-      #endif
-      #endif
-   }
-};
-
 class QueryParamParser : public queryfiles::QueryParser 
 {
    std::string stringParam;
@@ -200,6 +158,63 @@ private:
    }
 };
 
+struct PrintResults {
+   awfy::counters::ProgramCounters& counters;
+   ScheduleGraph& taskGraph;
+   queryfiles::QueryBatcher& batches;
+   FileIndexes& fileIndexes;
+   const string& dataPath;
+   awfy::chrono::Time start;
+   const queryfiles::QueryParser& parser;
+   PrintResults(awfy::counters::ProgramCounters& counters, ScheduleGraph& taskGraph, queryfiles::QueryBatcher& batches, FileIndexes& fileIndexes, const string& dataPath, awfy::chrono::Time start, const queryfiles::QueryParser& parser)
+      : counters(counters), taskGraph(taskGraph), batches(batches), fileIndexes(fileIndexes), dataPath(dataPath), start(start), parser(parser)
+   { }
+
+   void operator()() {
+      #ifdef MEASURE
+      auto paramParser = dynamic_cast<const QueryParamParser*>(&parser);
+      if (paramParser != nullptr) {
+         std::cout << 'q' << paramParser->query->id << ',';
+      } else {
+         std::cout << "queries from file " << dataPath << ',';
+      }
+      measurement::print(std::cout);
+      #ifdef PRINT_RESULTS
+      std::cout << ',';
+      #else
+      std::cout << '\n';
+      #endif
+      #endif
+      #if defined(PRINT_RESULTS) || defined(DEBUG)
+      auto queryList=batches.getQueryList();
+
+      #ifdef DEBUG
+      counters.printStats();
+
+      auto end=awfy::chrono::now();
+      auto duration=end-start;
+
+      cerr<<"DUR: "<<duration<<"ms, Busy: "<<(awfy::chrono::now()-end)<<" ms"<<endl;
+      cerr<<"Q1:"<<batches.batchCounts[0]<<",Q2:"<<batches.batchCounts[1]<<",Q3:"<<batches.batchCounts[2]<<",Q4:"<<batches.batchCounts[3]<<endl;
+
+      auto outputStart=awfy::chrono::now();
+      #endif
+      // Print results
+      for(auto queryIter=queryList.cbegin(); queryIter!=queryList.cend(); queryIter++) {
+         // Compare results
+         auto result = string((*queryIter)->result);
+         cout<<result<<endl;
+      }
+      #ifdef DEBUG
+      end=awfy::chrono::now();
+      cerr<<"OUT:"<<end-outputStart<<" ms"<<endl;
+      awfy::counters::AllocationStats stats=counters.getAllocationStats();
+      cerr<<"MEM:"<<stats.totalBytes<<", "<<stats.totalAllocations<<endl;
+      #endif
+      #endif
+   }
+};
+
 const static std::string FILE_FLAG = "FILE";
 const static std::string PARAM_FLAG = "PARAM";
 
@@ -246,21 +261,12 @@ int main(int argc, char **argv) {
    runtime::QueryState queryState(taskGraph, scheduler, fileIndexes);
 
    initScheduleGraph<PrintResults, ParseAllBatches>(scheduler, taskGraph, fileIndexes, dataPath, batches, queryState, excludes,
-      PrintResults(counters, taskGraph, batches, fileIndexes, dataPath, start));
+      PrintResults(counters, taskGraph, batches, fileIndexes, dataPath, start, *queries));
 
    taskGraph.eraseNotUsedEdges();
 
    executeTaskGraph(hardwareThreads, scheduler, counters, threadCounts);
 
-   #ifdef MEASURE
-   auto paramParser = dynamic_cast<QueryParamParser*>(queries);
-   if (paramParser != nullptr) {
-      std::cout << 'q' << paramParser->query->id << ',';
-   } else {
-      std::cout << "queries from file " << dataPath << ',';
-   }
-   measurement::print(std::cout);
-   #endif
    delete queries;
    delete queryFile;
    return 0;

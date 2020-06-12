@@ -193,13 +193,6 @@ int main(int argc, char* argv[]) {
 	threadpool->condition.notify_all();
 	delete threadpool;		// will wait to join all thread
 
-	#ifdef PRINT_RESULTS
-	q1.print_result();
-	q2.print_result();
-	q3.print_result();
-	q4.print_result();
-	#endif
-
 	#ifdef MEASURE
 	measurement::finished();
 	if (printQueryNumber) {
@@ -208,7 +201,20 @@ int main(int argc, char* argv[]) {
 		std::cout << "queries from file " << argv[3] << ',';
 	}
 	measurement::print(std::cout);
-   	#endif
+	#ifdef PRINT_RESULTS
+	std::cout << ',';
+	#else
+	std::cout << '\n';
+	#endif
+	#endif
+
+	#ifdef PRINT_RESULTS
+	q1.print_result();
+	q2.print_result();
+	q3.print_result();
+	q4.print_result();
+	#endif
+
 
 	//fprintf(stderr, "%lu\t%lu\t%lu\t%lu\n", q1_set.size(), q2_set.size(), q3_set.size(), q4_set.size());
 	// tot_time[3] += TotalTimer::rst["Q3"];

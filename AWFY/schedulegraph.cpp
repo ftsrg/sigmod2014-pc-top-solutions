@@ -22,14 +22,14 @@ limitations under the License.
 #include "include/util/measurement.hpp"
 
 #ifdef MEASURE
-   #define TASK_START(node)                         \
-      if (node == TaskGraph::Node::Query1           \
-            || node == TaskGraph::Node::Query2      \
-            || node == TaskGraph::Node::Query3      \
-            || node == TaskGraph::Node::Query4) {   \
-         measurement::queryStart();                 \
-      } else if (node == TaskGraph::Node::Finish) { \
-         measurement::finished();                   \
+   #define TASK_START(node)                                  \
+      if (node == TaskGraph::Node::Query1                    \
+            || node == TaskGraph::Node::Query2               \
+            || node == TaskGraph::Node::Query3               \
+            || node == TaskGraph::Node::Query4) {            \
+         measurement::queryStart();                          \
+      } else if (node == TaskGraph::Node::ValidateAnswers) { \
+         measurement::finished();                            \
       }
 #else
    #define TASK_START(node)

@@ -34,5 +34,5 @@ void measurement::finished() {
 
 
 void measurement::print(std::ostream& os) {
-   os << firstQueryStartedAt << ',' << finishedAt - firstQueryStartedAt << std::endl;
+   os << firstQueryStartedAt << ',' << finishedAt - firstQueryStartedAt;
 }
