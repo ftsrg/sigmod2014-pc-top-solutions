@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
       }
       globalQueryId = queryIndex + 1;
    };
-   if (argv[2] == FILE_FLAG || argv[2]) {
+   if (argv[2] == FILE_FLAG) {
       const string queryPath(argv[3]);
       queryFile = new io::MmapedFile(queryPath, O_RDONLY);
       queries = new queryfiles::QueryFileParser(*queryFile);
