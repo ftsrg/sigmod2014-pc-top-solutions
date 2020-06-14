@@ -131,6 +131,7 @@ const static std::string PARAM_FLAG = "PARAM";
 int main(int argc, char* argv[]) {
 	if(argc < 4) {
 		cerr<<"Usage with query file: " << argv[0] << " <dataFolder> " << FILE_FLAG << " <queryFile>"<<endl;
+		cerr<<"Usage with query file and query id: " << argv[0] << " <dataFolder> " << FILE_FLAG << " <queryFile>" << " <queryId>"<<endl;
 		cerr<<"Usage with query params: " << argv[0] << " <dataFolder> " << PARAM_FLAG << " <queryNumber> <param1> <param2> ..."<<endl;
 		return -1;
 	}
