@@ -60,5 +60,6 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "bit": "cpp"
-    }
+    },
+    "editor.formatOnSave": false
 }
