@@ -151,8 +151,15 @@ int main(int argc, char* argv[]) {
 	string dir(argv[1]);
 
 	bool printQueryNumber = false;
+	size_t queryId{0U};
 	if (argv[2] == FILE_FLAG) {
 		read_query(string(argv[3]));		// read query first, so we can read data optionally later
+		if (argc > 4) {
+			if (argv[4][0] < '1' || argv[4][0] > '4') {
+				throw std::runtime_error("Invalid query id");				
+			}
+			queryId = argv[4][0] - '0';
+		}
 	} else if (argv[2] == PARAM_FLAG) {
 		parse_query(argc, argv);
 		printQueryNumber = true;
@@ -198,6 +205,9 @@ int main(int argc, char* argv[]) {
 	if (printQueryNumber) {
 		std::cout << 'q' << argv[3][0] << ',';
 	} else {
+		if (queryId > 0) {
+			std::cout << 'q' << queryId << ' ';
+		}
 		std::cout << "queries from file " << argv[3] << ',';
 	}
 	measurement::print(std::cout);

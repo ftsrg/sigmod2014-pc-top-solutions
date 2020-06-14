@@ -37,6 +37,8 @@ limitations under the License.
 
 const uint32_t hardwareThreads=std::thread::hardware_concurrency(); // Intel Xeon E5430 has 4 cores and no HT (2 sockets = 8 cores)
 
+size_t globalQueryId{0U};
+
 struct ParseAllBatches {
    queryfiles::QueryBatcher& batches;
 
@@ -176,6 +178,9 @@ struct PrintResults {
       if (paramParser != nullptr) {
          std::cout << 'q' << paramParser->query->id << ',';
       } else {
+         if (globalQueryId != 0U) {
+            std::cout << 'q' << globalQueryId << ' ';
+         }
          std::cout << "queries from file " << dataPath << ',';
       }
       measurement::print(std::cout);
@@ -241,17 +246,38 @@ int main(int argc, char **argv) {
 
    queryfiles::QueryParser* queries = nullptr;
    io::MmapedFile* queryFile = nullptr;
-   if (argv[2] == FILE_FLAG) {
-      const string queryPath(argv[argc-1]);
-
-      queryFile = new io::MmapedFile(queryPath, O_RDONLY);
-      queries = new queryfiles::QueryFileParser(*queryFile);
-   } else if (argv[2] == PARAM_FLAG) {
-      auto* paramParser = new QueryParamParser(argc, argv);
-      auto queryIndex = queryfiles::QueryParser::getQueryIndex(paramParser->query->id);
+   const auto updateExcludes = [&excludes](const size_t queryIndex){
       for (auto index = 0u; index < 4; ++index) {
          excludes[index] = index != queryIndex;
       }
+      globalQueryId = queryIndex + 1;
+   };
+   if (argv[2] == FILE_FLAG || argv[2]) {
+      const string queryPath(argv[3]);
+      queryFile = new io::MmapedFile(queryPath, O_RDONLY);
+      queries = new queryfiles::QueryFileParser(*queryFile);
+      if (argc > 4) {
+         switch (argv[4][0]) {
+            case queryfiles::QueryParser::Query1::QueryId:
+               updateExcludes(0);
+               break;
+            case queryfiles::QueryParser::Query2::QueryId:
+               updateExcludes(1);
+               break;
+            case queryfiles::QueryParser::Query3::QueryId:
+               updateExcludes(2);
+               break;
+            case queryfiles::QueryParser::Query4::QueryId:
+               updateExcludes(3);
+               break;
+            default:
+               throw std::runtime_error("Invalid query id");
+         }
+      }
+   } else if (argv[2] == PARAM_FLAG) {
+      auto* paramParser = new QueryParamParser(argc, argv);
+      auto queryIndex = queryfiles::QueryParser::getQueryIndex(paramParser->query->id);
+      updateExcludes(queryIndex);
       queries = paramParser;
    }
 
