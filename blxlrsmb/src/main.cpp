@@ -207,9 +207,10 @@ int main(int argc, char* argv[]) {
 		std::cout << 'q' << argv[3][0] << ',';
 	} else {
 		if (queryId > 0) {
-			std::cout << 'q' << queryId << ' ';
+			std::cout << 'q' << queryId << ',';
+		} else {
+		  std::cout << "queries from file " << argv[3] << ',';
 		}
-		std::cout << "queries from file " << argv[3] << ',';
 	}
 	measurement::print(std::cout);
 	#ifdef PRINT_RESULTS
