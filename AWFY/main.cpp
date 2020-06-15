@@ -179,9 +179,10 @@ struct PrintResults {
          std::cout << 'q' << paramParser->query->id << ',';
       } else {
          if (globalQueryId != 0U) {
-            std::cout << 'q' << globalQueryId << ' ';
-         }
-         std::cout << "queries from file " << dataPath << ',';
+            std::cout << 'q' << globalQueryId << ',';
+         } else {
+	   std::cout << "queries from file " << dataPath << ',';
+	 }
       }
       measurement::print(std::cout);
       #ifdef PRINT_RESULTS
